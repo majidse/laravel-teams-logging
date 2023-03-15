@@ -42,9 +42,23 @@ class LoggerHandler extends AbstractProcessingHandler
             // Include context as facts to send to microsoft teams
             // Added Sent Date Info
 
+            $fullUrl = \Request::fullUrl();
+            $route = request()->route();
             $facts = [];
+
             foreach($record['context'] as $name => $value){
-                $facts[] = ['name' => $name, 'value' => $value];
+                if ($name == 'exception') {
+                    $facts[] = ['name' => 'Message', 'value' => $value->getMessage()];
+                    $facts[] = ['name' => 'File', 'value' => $value->getFile()];
+                    $facts[] = ['name' => 'Line', 'value' => $value->getLine()];
+                    $facts[] = ['name' => 'RouteUrl', 'value' =>$fullUrl];
+                    $facts[] = ['name' => 'RouteParameters', 'value' => "<pre>" . json_encode(request()->query(), JSON_PRETTY_PRINT) . "</pre>"];
+                    $facts[] = ['name' => 'RequestIp', 'value' => request()->ip()];
+                    $facts[] = ['name' => 'RequestHeaders', 'value' => "<pre>" . json_encode(request()->headers->all(), JSON_PRETTY_PRINT) . "</pre>"];
+                    $facts[] = ['name' => 'Trace', 'value' => $value->getTraceAsString()];
+                } else {
+                    $facts[] = ['name' => $name, 'value' => $value];
+                }
             }
 
             $facts = array_merge($facts, [[
@@ -52,7 +66,7 @@ class LoggerHandler extends AbstractProcessingHandler
                 'value' => date('D, M d Y H:i:s e'),
             ]]);
 
-            return $this->useCardStyling($record['level_name'], $record['message'], $facts);
+            return $this->useCardStyling($record['level_name'], '', $facts);
         } else {
             return $this->useSimpleStyling($record['level_name'], $record['message']);
         }
