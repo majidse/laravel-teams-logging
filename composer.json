@@ -1,11 +1,15 @@
 {
-	"name": "margatampu/laravel-teams-logging",
+	"name": "majidse/laravel-teams-logging",
 	"description": "Laravel handler to sending messages to Microsoft Teams using the Incoming Webhook connector",
 	"license": "MIT",
 	"authors": [
 		{
 			"name": "Sabar Tampubolon",
 			"email": "sabartampubolon@gmail.com"
+		},
+		{
+			"name": "Majid Alizadeh",
+			"email": "majid@netasolutions.com"
 		}
 	],
 	"require": {
